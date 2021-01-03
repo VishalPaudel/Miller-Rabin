@@ -1,0 +1,116 @@
+import time
+import matplotlib.pyplot as plt
+
+def _try_composite(a, d, n, s):
+   if pow(a, d, n) == 1:
+       return False
+   for jn in range(s):
+       if pow(a, 2 ** jn * d, n) == n - 1:
+           return False
+   return True  # n  is definitely composite
+def is_prime(n, _precision_for_huge_n=16):
+   if n in _known_primes:
+       return True
+   if any((n % p) == 0 for p in _known_primes) or n in (0, 1):
+       return False
+   d, s = n - 1, 0
+   while not d % 2:
+       d, s = d >> 1, s + 1
+   # Returns exact according to http://primes.utm.edu/prove/prove2_3.html
+   if n < 1373653:
+       return not any(_try_composite(a, d, n, s) for a in (2, 3))
+   if n < 25326001:
+       return not any(_try_composite(a, d, n, s) for a in (2, 3, 5))
+   if n < 118670087467:
+       if n == 3215031751:
+           return False
+       return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7))
+   if n < 2152302898747:
+       return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11))
+   if n < 3474749660383:
+       return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11, 13))
+   if n < 341550071728321:
+       return not any(_try_composite(a, d, n, s) for a in (2, 3, 5, 7, 11, 13, 17))
+   # otherwise
+   return not any(_try_composite(a, d, n, s)
+                  for a in _known_primes[:_precision_for_huge_n])
+
+
+_known_primes = [2, 3]
+_known_primes += [x for x in range(5, 1000, 2) if is_prime(x)]
+
+while True:
+   print("HI:")
+
+   # Initials
+   variable_to_plot = 0
+   natural_lst = []
+   lst_prime_or_not = []
+   prime_lst = []
+   var_new_prime_lst = 0
+   prime_new_lst = []
+
+   # Input Variables
+   prime_1 = int(input("Enter the first prime - "))
+   prime_2 = int(input("Enter the second prime - "))
+   starting_input = 0
+   till = int(input("Enter the limit n - "))
+   actual_till = till - starting_input + 1
+   print(" ")
+   using_starting_input = starting_input
+
+   before = time.time()
+
+   # Step function for V.I.S.H.A.l prime ladder
+   for num_input in range(starting_input, till + 1):  # Main value loop and prime storing addition
+       exp_1 = num_input - 1
+       exp_2 = 0
+       holder = 0
+       for exp_2 in range(exp_2, num_input):
+           holder = holder + ((prime_1 ** exp_2) * (prime_2 ** exp_1))
+           exp_1 = exp_1 - 1
+           exp_2 = exp_2 + 1
+
+       num_final = holder + (prime_2 * prime_1 ** num_input)
+
+       if is_prime(num_final):
+           variable_to_plot = variable_to_plot + 1
+           lst_prime_or_not.append(variable_to_plot)
+       elif not is_prime(num_final):
+           lst_prime_or_not.append(variable_to_plot)
+   # Step function list for Natural Prime ladder
+   for i in range(starting_input, till + 1, 1):
+       if is_prime(i):
+           var_new_prime_lst = var_new_prime_lst + 1
+           prime_new_lst.append(var_new_prime_lst)
+           prime_lst.append(i)
+       else:
+           prime_new_lst.append(var_new_prime_lst)
+   # Creating natural list
+   while len(natural_lst) < actual_till and using_starting_input in range(using_starting_input, till + 1):
+       natural_lst.append(using_starting_input)
+       using_starting_input = using_starting_input + 1
+
+   print(time.time() - before)
+
+   # Graph Variables
+   x = natural_lst
+   jj = prime_new_lst
+   kk = lst_prime_or_not
+
+   # (Natural Primes VS V.I.S.H.A.L Function Prime)
+   plt.subplots()
+   plt.step(x, jj, where="post", label="Step post")
+   plt.plot(x, jj, "C0o", alpha=1)
+   plt.legend("Re")
+
+   plt.step(x, kk, where="post", label="Step post")
+   plt.plot(x, kk, "C1o", alpha=1)
+   plt.legend("Im")
+   plt.grid(True)
+   plt.show()
+
+   if 1 < 2:
+       continue
+
+print("Thank you!, \n, VishalPaudel876@gmail.com")
